@@ -22,7 +22,8 @@
 
 import argparse
 import json
-import urllib2
+import urllib.request
+import urllib.parse
 
 VERSION = "0.3.1"
 
@@ -95,17 +96,18 @@ def payload(args):
     if args.channel:
         payload["channel"] = args.channel
 
-    data = "payload=" + json.dumps(payload)
+    data = {'payload': json.dumps(payload)}
     return data
 
 
 def request(url, data):
-    req = urllib2.Request(url, data)
-    response = urllib2.urlopen(req)
+    encoded_data = urllib.parse.urlencode(data).encode("utf-8")
+    req = urllib.request.Request(url)
+    response = urllib.request.urlopen(req, data=encoded_data)
     return response.read()
 
 
 if __name__ == "__main__":
     args = parse()
     response = request(args.url, payload(args))
-    print response
+    print(response)
