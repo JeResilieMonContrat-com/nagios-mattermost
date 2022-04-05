@@ -57,7 +57,9 @@ def encode_special_characters(text):
     return text
 
 
-def emoji(notificationtype):
+def emoji(notificationtype, servicestate=None):
+    if servicestate == "WARNING":
+        return ":warning:"
     return {
         "RECOVERY": ":white_check_mark: ",
         "PROBLEM": ":fire: ",
@@ -75,7 +77,7 @@ def text(args):
         template_cgiurl = " [View :link:]({cgiurl}?type=2&host={hostalias}&service={servicedesc})"
     template = template_service if args.servicestate else template_host
 
-    text = emoji(args.notificationtype) + template.format(**vars(args))
+    text = emoji(args.notificationtype, args.servicestate) + template.format(**vars(args))
     if args.cgiurl is not None:
         # If we know the CGI url provide a clickable link to the nagios CGI
         text = text + template_cgiurl.format(**vars(args))
